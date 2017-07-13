@@ -14,41 +14,36 @@
           <!-- 服务器选择 -->
           <div class="navdemo" :class="{active: show.server}" @click="changeShow(showKey._SERVER);"><a
              href="javascript:void(0)"><span
-             class="server color-666 f30">{{this.server.menuTopName}}</span></a></div>
-          <!-- 排序方式选择
-          <div class="navdemo" :class="{active: show.sort}" @click="changeShow('sort')"><a
+             class="server color-666 f30">{{server.menuTopName}}</span></a></div>
+          <!-- 排序方式选择 -->
+          <div class="navdemo" :class="{active: show.sort}" @click="changeShow(showKey._SORT)"><a
              href="javascript:void(0)"><span
-             class="sortin color-666 f30" v-text="sortChecked.sortTypeName">排序</span></a></div>
-          &lt;!&ndash; 筛选 &ndash;&gt;
-          <div class="navdemo" @click="changeShow('filter')"><a href="javascript:void(0)"><span
-             class="screen color-666 f30">筛选</span></a></div>-->
+             class="sortin color-666 f30"
+             v-text="sort.list[sort.index].sortTypeName">排序</span></a></div>
+          <!-- 筛选 -->
+          <div class="navdemo" @click="changeShow(showKey._FILTER)"><a href="javascript:void(0)"><span
+             class="screen color-666 f30">筛选</span></a></div>
         </div>
         <div class="gmnav-list">
           <!-- 商品类型选择列表 -->
           <v-nav-type
              :show="show.type"
              :goodsType="goodsType"
-             @clickItem="typeClick"
-          >
+             @clickItem="typeClick">
           </v-nav-type>
           <!-- 区服选择列表 -->
           <v-nav-server
              :show="show.server"
              :server="server"
              @clickItem="serverClickRight"
-             @clickLeft="serverClickLeft"
-          >
+             @clickLeft="serverClickLeft">
           </v-nav-server>
           <!-- 排序方式 -->
-          <!--<div class="seach-list" v-show="show.sort">
-            <div class="gmvst-mold">
-              <ul>
-                <li v-for="item in sorts" class="f30 border-bottom px-30 "
-                    @click="sortChecked = item;changeShow('sort', false)"
-                    :class="{active: item === sortChecked}"><span>{{item.sortTypeName}}</span></li>
-              </ul>
-            </div>
-          </div>-->
+          <v-nav-sort
+             :show="show.sort"
+             :sort="sort"
+             @clickItem="sortClick">
+          </v-nav-sort>
         </div>
       </div>
       <!-- 列表 -->
@@ -88,10 +83,12 @@
   import listCom from '@/components/goods_list/list.vue' // 列表
   import navTypeCom from '@/components/goods_list/nav_type.vue' // 类型选择
   import navServerCom from '@/components/goods_list/nav_server.vue' // 服务器选择
+  import navSortCom from '@/components/goods_list/nav_sort.vue' // 服务器选择
   export default {
     components: {
       'v-list': listCom,
       'v-nav-type': navTypeCom,
+      'v-nav-sort': navSortCom,
       'v-nav-server': navServerCom
     },
     data () {
@@ -108,6 +105,14 @@
           menuLeftNameDefault: {platform: '平台', client: '客户端', server: '服务器'},
           menuTopName: '服务器', // 主菜单显示名
           outId: 0 // 特殊id， 点击后直接算结束
+        },
+        sort: {
+          list: [
+            {'sortTypeId': 1, 'sortTypeName': '最新发布'},
+            {'sortTypeId': 3, 'sortTypeName': '价格最低'},
+            {'sortTypeId': 4, 'sortTypeName': '价格最高'}
+          ],
+          index: 0
         }
       }
     },
@@ -123,6 +128,11 @@
       this.init()
     },
     methods: {
+      /* 排序方式选择，返回的是当前点击的第几个 */
+      sortClick (index) {
+        this.sort.index = index
+        this.changeShow(this.showKey._SORT, false)
+      },
       /* 服务器菜单 左侧点击 （平台、客户端、服务器） */
       serverClickLeft (type) {
         switch (type) {

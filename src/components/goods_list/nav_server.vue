@@ -6,26 +6,23 @@
           <!-- 平台 -->
           <li class="border-bottom"
               :class="{choice: checked[PLATFORM], curren: current === PLATFORM }"
-              @click="clickLeft(PLATFORM)"
-          ><a href="javascript:void(0)">
-              <span class="f30 color-000"
-                    v-text="menuLeftName[PLATFORM]"><i class="close"></i>
+              @click="clickLeft(PLATFORM)">
+            <a href="javascript:void(0)">
+              <span class="f30 color-000"> {{menuLeftName[PLATFORM]}}<i class="close"></i>
               </span></a></li>
           <!-- 客户端 -->
           <li class="border-bottom"
               :class="{choice: checked[CLIENT], curren: current === CLIENT }"
-              @click="clickLeft(CLIENT)"
-          ><a href="javascript:void(0)">
-              <span class="f30 color-000"
-                    v-text="menuLeftName[CLIENT]">
+              @click="clickLeft(CLIENT)">
+            <a href="javascript:void(0)">
+              <span class="f30 color-000">{{menuLeftName[CLIENT]}}<i class="close"></i>
               </span></a></li>
           <!-- 服务器 -->
           <li class="border-bottom"
               :class="{choice: checked[SERVER], curren: current === SERVER }"
-              @click="clickLeft(SERVER)"
-          ><a href="javascript:void(0)">
-            <span class="f30 color-000"
-                  v-text="menuLeftName[SERVER]">
+              @click="clickLeft(SERVER)">
+            <a href="javascript:void(0)">
+            <span class="f30 color-000">{{menuLeftName[SERVER]}}<i class="close"></i>
             </span></a></li>
         </ul>
       </div>
