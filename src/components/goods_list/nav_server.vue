@@ -102,6 +102,16 @@
         }
       }
     },
+    watch: {
+      /* 如果没有选中右侧列表的任何一项，则退出时自动选中`不限`，平台除外 */
+      show (val) {
+        if (!val) {
+          if (this.checked[this.current] === null && this.current !== this.PLATFORM) {
+            this.clickItem(this.current, this.list[this.current][0])
+          }
+        }
+      }
+    },
     methods: {
       /* 点击左侧菜单 */
       clickLeft (type) {
