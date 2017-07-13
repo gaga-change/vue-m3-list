@@ -96,7 +96,7 @@
         gameId: null, // 游戏id
         goodsType: {list: [], checked: {}}, // 商品类型以及默认选中项
         show: {type: false, server: false, sort: false, filter: false}, // 控制第二层菜单的显示
-        showKey: {_TYPE: 'type', _SERVER: 'server', _SORT: 'sort', _FILTER: 'sort'},
+        showKey: {_TYPE: 'type', _SERVER: 'server', _SORT: 'sort', _FILTER: 'filter'},
         server: {  // 客户端 服务器 平台
           TYPE: {_PLATFORM: 'platform', _CLIENT: 'client', _SERVER: 'server'}, // 三个变量名常亮
           list: {platform: [], client: [], server: []}, // 列表
