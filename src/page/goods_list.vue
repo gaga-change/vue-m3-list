@@ -50,7 +50,12 @@
       <v-list></v-list>
       <div class="mstfiv" v-show="mstfivShow" @click="mstfivClick" @touchmove.prevent style="z-index: 1"></div>
     </div>
-    <v-filter :show="show.filter" ></v-filter>
+    <v-filter
+       :filter="filter"
+       @clickItem="filterClickItem"
+       @clear="filterClear"
+       @comfirm="filterConfirm"
+       :show="show.filter"></v-filter>
   </div>
 </template>
 
@@ -115,6 +120,30 @@
             {'sortTypeId': 4, 'sortTypeName': '价格最高'}
           ],
           index: 0
+        },
+        filter: {
+          price: {
+            minValue: null,
+            maxValue: null,
+            list: [
+              {min: null, max: null, name: '不限', radio: -1},
+              {min: null, max: 50, name: '50元以下', radio: -1},
+              {min: 50, max: 100, name: '50-100元', radio: -1},
+              {min: 100, max: 500, name: '100-500元', radio: -1},
+              {min: 500, max: 1000, name: '500-1000元', radio: -1},
+              {min: 1000, max: null, name: '1000元以上', radio: -1}
+            ],
+            chooseType: 1
+          },
+          service: {
+            list: [
+              {name: '安心买', checked: false},
+              {name: '截图认证', checked: false}
+            ],
+            chooseType: 2
+          },
+          CHOOSE_TYPE: {RADIO: 1, CHECK: 2},
+          TYPE: {PRICES: 'price', SERVICES: 'service'}
         }
       }
     },
@@ -130,6 +159,43 @@
       this.init()
     },
     methods: {
+      /* 筛选点击确定 */
+      filterConfirm () {
+        this.changeShow(this.showKey._FILTER, false)
+      },
+      /* 筛选点击重置 */
+      filterClear () {
+        let filter = this.filter
+        this.objMap(filter.TYPE, type => {
+          /* 如果是单选的 */
+          if (filter[type].chooseType === filter.CHOOSE_TYPE.RADIO) {
+            if (type === filter.TYPE.PRICES) {
+              filter.price.minValue = filter.price.maxValue = null
+            }
+            filter[type].list.map(val => {
+              val.radio = -1
+            })
+          } else { // 多选
+            filter[type].list.map(val => {
+              val.checked = false
+            })
+          }
+        })
+      },
+      /* 筛选点击选项 */
+      filterClickItem ({type, item, index}) {
+        let filter = this.filter
+        switch (type) {
+          case filter.TYPE.PRICES:
+            filter.price.list.map(v => { v.radio = -1 })
+            item.radio = index
+            filter.price.minValue = item.min
+            filter.price.maxValue = item.max
+            break
+          case filter.TYPE.SERVICES:
+            item.checked = !item.checked
+        }
+      },
       /* 排序方式选择，返回的是当前点击的第几个 */
       sortClick (index) {
         this.sort.index = index
@@ -247,6 +313,11 @@
       ]),
       clone (obj) { // 克隆方法
         return JSON.parse(JSON.stringify(obj))
+      },
+      objMap (obj, fun) {
+        for (let key in obj) {
+          fun(obj[key])
+        }
       }
     }
   }
