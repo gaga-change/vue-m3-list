@@ -48,7 +48,7 @@
       </div>
       <!-- 列表 -->
       <v-list
-        :goodsList="goodsList"></v-list>
+         :goodsList="goodsList"></v-list>
       <div class="mstfiv" v-show="mstfivShow" @click="mstfivClick" @touchmove.prevent style="z-index: 1"></div>
     </div>
     <v-filter
@@ -151,8 +151,8 @@
           },
           service: {
             list: [
-              {name: '安心买', checked: false},
-              {name: '截图认证', checked: false}
+              {name: '安心买', checked: false, key: 'is_robot_capture'},
+              {name: '截图认证', checked: false, key: 'is_axm'}
             ],
             chooseType: 2
           },
@@ -171,6 +171,7 @@
       },
       /* 计算获取列表需要的params */
       params () {
+        /* 品台、客户端、服务器 */
         let serverParams = {}
         if (this.server.checked.platform) {
           serverParams.service_provider_id = [this.server.checked.platform.id]
@@ -181,16 +182,30 @@
         if (this.server.checked.server && this.server.checked.server.id !== this.server.outId) {
           serverParams.server_id = [this.server.checked.server.id]
         }
+        /* 服务保障 */
+        this.filter.service.list.map(v => {
+          if (v.checked) {
+            serverParams[v.key] = ['true']
+          }
+        })
+        /* 筛选 */
+        let betweenMap = {}
+        let maxValue = this.filter.price.maxValue || '9999999'
+        let minValue = this.filter.price.minValue || '0'
+        if (this.filter.price.maxValue || this.filter.price.minValue) {
+          betweenMap.price = [minValue + '-' + maxValue]
+        }
+        /* 主结构 */
         let p = {
           accurateMap: {
             goods_type: ['2'],
             game_id: [this.gameId],
-            ...serverParams
+            ...serverParams // 区服、服务保障
           },
-          betweenMap: {},
+          betweenMap: {...betweenMap}, // 价格区间
           keyWordMap: {},
           pageCount: 10,
-          sortMap: this.sort.list[this.sort.index].sortMap
+          sortMap: this.sort.list[this.sort.index].sortMap // 排序方式
         }
         return p
       }
@@ -210,8 +225,8 @@
       /* 重新配置列表获取列表 */
       async setGoodsListInit () {
         /* 1. 当幕布回收的时候，判断请求参数（params）是否改变，如果有改变，重启发送请求
-        * 2. 数据初始化完毕（init）时, 触发
-        */
+         * 2. 数据初始化完毕（init）时, 触发
+         */
         if (JSON.stringify(this.params) !== this.goodsList.nowParams) {
           console.log('数据初始化 触发成功')
           this.goodsList.list = []
