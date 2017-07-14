@@ -48,6 +48,7 @@
       </div>
       <!-- 列表 -->
       <v-list
+         :inited="inited"
          :goodsList="goodsList"></v-list>
       <div class="mstfiv" v-show="mstfivShow" @click="mstfivClick" @touchmove.prevent style="z-index: 1"></div>
     </div>
@@ -101,6 +102,7 @@
     },
     data () {
       return {
+        inited: false, // 是否初始化，用户优化当第一次加载未完时，不显示`没有更多商品`
         gameId: null, // 游戏id
         goodsType: {list: [], checked: {}}, // 商品类型以及默认选中项
         show: {type: false, server: false, sort: false, filter: false}, // 控制第二层菜单的显示
@@ -131,7 +133,7 @@
           index: 0
         },
         goodsList: {
-          list: [],
+          list: null,
           page: 0,
           nowParams: '' // 当前商品列表的请求参数
         },
@@ -214,7 +216,7 @@
       mstfivShow (val, old) {
         if (old === true && val === false) {
           console.log('幕布关闭，触发初始化')
-          this.setGoodsListInit()
+          this.asyncSetGoodsListInit()
         }
       }
     },
@@ -223,13 +225,14 @@
     },
     methods: {
       /* 重新配置列表获取列表 */
-      async setGoodsListInit () {
+      async asyncSetGoodsListInit () {
         /* 1. 当幕布回收的时候，判断请求参数（params）是否改变，如果有改变，重启发送请求
          * 2. 数据初始化完毕（init）时, 触发
          */
         if (JSON.stringify(this.params) !== this.goodsList.nowParams) {
           console.log('数据初始化 触发成功')
-          this.goodsList.list = []
+          /* null 是用来判断列表是否第一次请求（list组件需要），所以第一次请求不能先赋值一个空数组 */
+          if (this.goodsList.list !== null) this.goodsList.list = []
           this.goodsList.page = 0
           this.goodsList.nowParams = JSON.stringify(this.params)
           let data = await this.getGoodsList({...this.params, page: 0})
@@ -353,7 +356,8 @@
         this.goodsType.list = await this.getGoodsTypes({gameId: this.gameId})
         this.goodsType.checked = this.goodsType.list.filter(v => v.goodsType === 2)[0] // 暂时只显示账号
         /* 获取列表 */
-        this.setGoodsListInit()
+        this.asyncSetGoodsListInit()
+        this.inited = true
       },
       /* 获取平台列表 */
       setPlatform () {
