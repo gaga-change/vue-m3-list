@@ -115,11 +115,24 @@
         },
         sort: {
           list: [
-            {'sortTypeId': 1, 'sortTypeName': '最新发布'},
-            {'sortTypeId': 3, 'sortTypeName': '价格最低'},
-            {'sortTypeId': 4, 'sortTypeName': '价格最高'}
+            {'sortTypeId': 1, 'sortTypeName': '最新发布', sortMap: {goods_source_type: '+', create_time: '-'}},
+            {
+              'sortTypeId': 3,
+              'sortTypeName': '价格最低',
+              sortMap: {browse_count: '+', goods_source_type: '+', create_time: '-'}
+            },
+            {
+              'sortTypeId': 4,
+              'sortTypeName': '价格最高',
+              sortMap: {browse_count: '-', goods_source_type: '+', create_time: '-'}
+            }
           ],
           index: 0
+        },
+        goodsList: {
+          list: [],
+          page: 0,
+          paramsChange: false
         },
         filter: {
           price: {
@@ -148,17 +161,56 @@
       }
     },
     computed: {
+      /* 通过四个菜单是否显示控制幕布的显示 */
       mstfivShow () {
         for (let key in this.show) {
           if (this.show[key]) return true
         }
         return false
+      },
+      /* 计算获取列表需要的params */
+      params () {
+        let p = {
+          accurateMap: {
+            goods_type: ['2'],
+            game_id: [this.gameId]
+          },
+          betweenMap: {},
+          keyWordMap: {},
+          pageCount: 10,
+          sortMap: this.sort.list[this.sort.index]
+        }
+        return p
+      }
+    },
+    watch: {
+      mstfivShow (val, old) {
+        if (old === true && val === false) this.setGoodsListInit()
+      },
+      params () {
+        this.goodsList.paramsChange = true
       }
     },
     created () {
       this.init()
     },
     methods: {
+      /* 重新配置列表获取列表 */
+      async setGoodsListInit () {
+        /* 1. 当幕布回收的时候，判断请求参数（params）是否改变，如果有改变，重启发送请求
+        * 2. 数据初始化完毕（init）时, 触发
+        */
+        if (this.goodsList.paramsChange) {
+          console.log('数据初始化')
+          this.goodsList.page = 0
+          let data = await this.getGoodsList({...this.params, page: 0})
+          this.goodsList.list.push(...data)
+        }
+      },
+      setGoodsListAdd () {
+        /* 2. 当无限加载被触发的时候，发送请求 */
+
+      },
       /* 筛选点击确定 */
       filterConfirm () {
         this.changeShow(this.showKey._FILTER, false)
@@ -262,15 +314,17 @@
         }
       },
       async init () {
-        /* 所有初始化需要的数据 放置在此处 */
-        let params = this.$route.params
+        /* 所有初始化需要的数据，或是需要执行的方法 放置在此处 */
         /* 获取到 gameId */
+        let params = this.$route.params
         this.gameId = params.gameId
+        /* 配置平台 异步 */
+        this.setPlatform()
         /* 配置商品类型,以及默认选中的项 */
         this.goodsType.list = await this.getGoodsTypes({gameId: this.gameId})
         this.goodsType.checked = this.goodsType.list.filter(v => v.goodsType === 2)[0] // 暂时只显示账号
-        /* 配置平台 异步 */
-        this.setPlatform()
+        /* 获取列表 */
+        this.setGoodsListInit()
       },
       /* 获取平台列表 */
       setPlatform () {
@@ -309,6 +363,7 @@
         'getGoodsTypes',  // 获取商品类型
         'getGamePlants', // 获取平台
         'getGameClients', // 获取客户端
+        'getGoodsList', // 获取商品列表
         'getGameServers' // 获取服务器
       ]),
       clone (obj) { // 克隆方法

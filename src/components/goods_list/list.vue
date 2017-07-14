@@ -66,8 +66,6 @@
     </div>
     <!--列表2-->
     <div class="mbilegames-list border-top" style="display:none">
-
-
       <ul>
         <li class="listware px-30 py-20 bg-fff border-bottom mb-20">
           <div class="hrgames-titl f32 color-000">S1到S7，5季王者，荣耀21星国服曹</div>

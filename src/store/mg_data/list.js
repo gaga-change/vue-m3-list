@@ -131,6 +131,25 @@ api.getGameServers = function ({state, commit}, params) {
     })
   })
 }
+
+/**
+ *  获取商品列表
+ * @param state
+ * @param commit
+ * @param params {...}
+ * @returns {Promise}
+ */
+api.getGoodsList = function ({state, commit}, params) {
+  return new Promise((resolve, reject) => {
+    state.axios.post(state.CONSTANTS.APISearch + '/goodsSearch/goodsSearchList', params).then(({data}) => {
+      data = JSON.parse(data.result)
+      resolve(data.items || [])
+    }, () => {
+      console.log('商品列表请求错误 (╯‵□′)╯︵┻━┻')
+      resolve([])
+    })
+  })
+}
 api.test = function () {
   return new Promise((resolve, reject) => {
     console.log('test in ')
