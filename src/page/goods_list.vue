@@ -232,7 +232,8 @@
         if (JSON.stringify(this.params) !== this.goodsList.nowParams) {
           console.log('数据初始化 触发成功')
           /* null 是用来判断列表是否第一次请求（list组件需要），所以第一次请求不能先赋值一个空数组 */
-          if (this.goodsList.list !== null) this.goodsList.list = []
+//          if (this.goodsList.list !== null) this.goodsList.list = []
+          this.goodsList.list = null
           this.goodsList.page = 0
           this.goodsList.nowParams = JSON.stringify(this.params)
           let data = await this.getGoodsList({...this.params, page: 0})

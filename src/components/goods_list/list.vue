@@ -95,9 +95,14 @@
     },
     watch: {
       list (val, old) {
-        this.$nextTick(() => {
-          this.start = true
-        })
+        if (val === null) {
+          this.start = false
+        }
+        if (old === null && val !== null) {
+          this.$nextTick(() => {
+            this.start = true
+          })
+        }
       }
     },
     methods: {
