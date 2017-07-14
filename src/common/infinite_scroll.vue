@@ -11,7 +11,9 @@
       >
         <slot></slot>
         <slot name="noDataShow" v-if="true"></slot>
-        <p v-show="loading && !allLoading" class="page-infinite-loading">
+        <!-- !start（start===false） 第一次加载的时候显示 -->
+        <!-- loading && !allLoading 加载中的时候显示 -->
+        <p v-show="(loading && !allLoading) || start === false" class="page-infinite-loading">
           <mt-spinner type="fading-circle"></mt-spinner>
           加载中...
         </p>
@@ -23,7 +25,7 @@
 <script>
 
   export default {
-    props: ['dataArr', 'updateTop', 'updateBottom'],
+    props: ['dataArr', 'updateTop', 'updateBottom', 'start'],
     data () {
       /**
        * 皆为内部状态，组件内部独立使用。
@@ -50,6 +52,7 @@
         this.loading = true
         this.updateBottom().then((noData) => {
           if (noData) {
+            console.log('加载结束')
             if (this.list.length === 0) {
               this.noDataShow = true // 显示页面空白部分
             }

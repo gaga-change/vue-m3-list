@@ -16,6 +16,7 @@
               </a>
             </div>-->
       <v-infinite-scroll
+         :start="start"
          :dataArr="list"
          :updateBottom="updateBottom">
         <ul>
@@ -39,7 +40,7 @@
           </li>
         </ul>
         <!-- 没有更多商品 -->
-        <div class="tab-empty" v-if="start">
+        <div class="tab-empty" v-if="(start&&noNext)||(start&&list.length < pageCount)">
           <div class="empty-conn px-30">
             <div class="list-img"><img src="~images/gamelist.png"></div>
             <div class="emp-text f28 color-999 text-center">抱歉，没有更多商品了~</div>
@@ -81,14 +82,16 @@
 
 <script>
   export default {
-    props: ['goodsList'],
+    props: ['goodsList', 'scrollButton'],
     data () {
       return {
-        start: false
+        start: false,
+        noNext: false
       }
     },
     computed: {
-      list () { return this.goodsList.list }
+      list () { return this.goodsList.list },
+      pageCount () { return this.goodsList.pageCount }
     },
     watch: {
       list (val, old) {
@@ -99,9 +102,9 @@
     },
     methods: {
       updateBottom () {
-        console.log('滚动到底部')
-        return new Promise((resolve, reject) => {
-          resolve()
+        return this.scrollButton().then(d => {
+          if (d) this.noNext = true
+          return d
         })
       }
     }

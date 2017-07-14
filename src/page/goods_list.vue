@@ -48,8 +48,8 @@
       </div>
       <!-- 列表 -->
       <v-list
-         :inited="inited"
-         :goodsList="goodsList"></v-list>
+         :goodsList="goodsList"
+         :scrollButton="setGoodsListAdd"></v-list>
       <div class="mstfiv" v-show="mstfivShow" @click="mstfivClick" @touchmove.prevent style="z-index: 1"></div>
     </div>
     <v-filter
@@ -102,7 +102,6 @@
     },
     data () {
       return {
-        inited: false, // 是否初始化，用户优化当第一次加载未完时，不显示`没有更多商品`
         gameId: null, // 游戏id
         goodsType: {list: [], checked: {}}, // 商品类型以及默认选中项
         show: {type: false, server: false, sort: false, filter: false}, // 控制第二层菜单的显示
@@ -135,6 +134,7 @@
         goodsList: {
           list: null,
           page: 0,
+          pageCount: 10,
           nowParams: '' // 当前商品列表的请求参数
         },
         filter: {
@@ -206,7 +206,7 @@
           },
           betweenMap: {...betweenMap}, // 价格区间
           keyWordMap: {},
-          pageCount: 10,
+          pageCount: this.goodsList.pageCount,
           sortMap: this.sort.list[this.sort.index].sortMap // 排序方式
         }
         return p
@@ -239,9 +239,14 @@
           this.goodsList.list = this.clone(data)
         }
       },
+      /* 列表滚动到底部时, 自动执行该方法 */
       setGoodsListAdd () {
+        this.goodsList.page += 1
+        return this.getGoodsList({...this.params, page: this.goodsList.page}).then(data => {
+          this.goodsList.list.push(...this.clone(data))
+          return data.length < this.goodsList.pageCount
+        })
         /* 2. 当无限加载被触发的时候，发送请求 */
-
       },
       /* 筛选点击确定 */
       filterConfirm () {
@@ -357,7 +362,6 @@
         this.goodsType.checked = this.goodsType.list.filter(v => v.goodsType === 2)[0] // 暂时只显示账号
         /* 获取列表 */
         this.asyncSetGoodsListInit()
-        this.inited = true
       },
       /* 获取平台列表 */
       setPlatform () {
