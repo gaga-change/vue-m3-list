@@ -3,9 +3,9 @@
     <!-- 头部 公共组价
       title<String> 给头部组件配置一个标题
     -->
-    <v-header title="gaga"></v-header>
+    <v-header :show="!show.filter" title="gaga"></v-header>
     <!-- top -->
-    <div class="goodslist-01">
+    <div v-show="!show.filter" class="goodslist-01">
       <div class="mobilegames-nav border-bottom mt-97 bg-fff fixed-top" style="z-index: 2">
         <div class="gmnav-mle">
           <!-- 商品类型 -->
@@ -50,6 +50,7 @@
       <v-list></v-list>
       <div class="mstfiv" v-show="mstfivShow" @click="mstfivClick" @touchmove.prevent style="z-index: 1"></div>
     </div>
+    <v-filter :show="show.filter" ></v-filter>
   </div>
 </template>
 
@@ -79,6 +80,7 @@
    * */
 
   import { mapActions } from 'vuex'
+  import filterCom from '@/components/goods_list/filter.vue' // 列表
   import listCom from '@/components/goods_list/list.vue' // 列表
   import navTypeCom from '@/components/goods_list/nav_type.vue' // 类型选择
   import navServerCom from '@/components/goods_list/nav_server.vue' // 服务器选择
@@ -88,7 +90,8 @@
       'v-list': listCom,
       'v-nav-type': navTypeCom,
       'v-nav-sort': navSortCom,
-      'v-nav-server': navServerCom
+      'v-nav-server': navServerCom,
+      'v-filter': filterCom
     },
     data () {
       return {
