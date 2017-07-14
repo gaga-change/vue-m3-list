@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import index from '@/page/index'
+const index = r => require.ensure([], () => r(require('@/page/index')), 'index')
 const GoodsList = r => require.ensure([], () => r(require('@/page/goods_list')), 'list')
 const test = r => require.ensure([], () => r(require('@/page/test')), 'test')
 

@@ -322,5 +322,3 @@
     }
   }
 </script>
-
-<style src='css/common/list-cl.css'></style>

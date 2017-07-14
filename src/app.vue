@@ -15,4 +15,5 @@ export default {
 
 <style>
   @import "./assets/css/fost-base.css";
+  @import "./assets/css/common/list-cl.css";
 </style>
