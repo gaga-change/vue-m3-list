@@ -47,7 +47,8 @@
         </div>
       </div>
       <!-- 列表 -->
-      <v-list></v-list>
+      <v-list
+        :goodsList="goodsList"></v-list>
       <div class="mstfiv" v-show="mstfivShow" @click="mstfivClick" @touchmove.prevent style="z-index: 1"></div>
     </div>
     <v-filter
@@ -119,12 +120,12 @@
             {
               'sortTypeId': 3,
               'sortTypeName': '价格最低',
-              sortMap: {browse_count: '+', goods_source_type: '+', create_time: '-'}
+              sortMap: {price: '+', goods_source_type: '+', create_time: '-'}
             },
             {
               'sortTypeId': 4,
               'sortTypeName': '价格最高',
-              sortMap: {browse_count: '-', goods_source_type: '+', create_time: '-'}
+              sortMap: {price: '-', goods_source_type: '+', create_time: '-'}
             }
           ],
           index: 0
@@ -178,17 +179,17 @@
           betweenMap: {},
           keyWordMap: {},
           pageCount: 10,
-          sortMap: this.sort.list[this.sort.index]
+          sortMap: this.sort.list[this.sort.index].sortMap
         }
         return p
       }
     },
     watch: {
-      mstfivShow (val, old) {
-        if (old === true && val === false) this.setGoodsListInit()
-      },
       params () {
         this.goodsList.paramsChange = true
+      },
+      mstfivShow (val, old) {
+        if (old === true && val === false) this.setGoodsListInit()
       }
     },
     created () {
@@ -197,14 +198,16 @@
     methods: {
       /* 重新配置列表获取列表 */
       async setGoodsListInit () {
+        console.log('重新配置列表获取列表')
         /* 1. 当幕布回收的时候，判断请求参数（params）是否改变，如果有改变，重启发送请求
         * 2. 数据初始化完毕（init）时, 触发
         */
         if (this.goodsList.paramsChange) {
           console.log('数据初始化')
           this.goodsList.page = 0
+          this.goodsList.paramsChange = false
           let data = await this.getGoodsList({...this.params, page: 0})
-          this.goodsList.list.push(...data)
+          this.goodsList.list = this.clone(data)
         }
       },
       setGoodsListAdd () {
