@@ -133,7 +133,7 @@
         goodsList: {
           list: [],
           page: 0,
-          paramsChange: false
+          nowParams: '' // 当前商品列表的请求参数
         },
         filter: {
           price: {
@@ -171,10 +171,21 @@
       },
       /* 计算获取列表需要的params */
       params () {
+        let serverParams = {}
+        if (this.server.checked.platform) {
+          serverParams.service_provider_id = [this.server.checked.platform.id]
+        }
+        if (this.server.checked.client && this.server.checked.client.id !== this.server.outId) {
+          serverParams.region_id = [this.server.checked.client.id]
+        }
+        if (this.server.checked.server && this.server.checked.server.id !== this.server.outId) {
+          serverParams.server_id = [this.server.checked.server.id]
+        }
         let p = {
           accurateMap: {
             goods_type: ['2'],
-            game_id: [this.gameId]
+            game_id: [this.gameId],
+            ...serverParams
           },
           betweenMap: {},
           keyWordMap: {},
@@ -185,11 +196,11 @@
       }
     },
     watch: {
-      params () {
-        this.goodsList.paramsChange = true
-      },
       mstfivShow (val, old) {
-        if (old === true && val === false) this.setGoodsListInit()
+        if (old === true && val === false) {
+          console.log('幕布关闭，触发初始化')
+          this.setGoodsListInit()
+        }
       }
     },
     created () {
@@ -198,14 +209,14 @@
     methods: {
       /* 重新配置列表获取列表 */
       async setGoodsListInit () {
-        console.log('重新配置列表获取列表')
         /* 1. 当幕布回收的时候，判断请求参数（params）是否改变，如果有改变，重启发送请求
         * 2. 数据初始化完毕（init）时, 触发
         */
-        if (this.goodsList.paramsChange) {
-          console.log('数据初始化')
+        if (JSON.stringify(this.params) !== this.goodsList.nowParams) {
+          console.log('数据初始化 触发成功')
+          this.goodsList.list = []
           this.goodsList.page = 0
-          this.goodsList.paramsChange = false
+          this.goodsList.nowParams = JSON.stringify(this.params)
           let data = await this.getGoodsList({...this.params, page: 0})
           this.goodsList.list = this.clone(data)
         }
