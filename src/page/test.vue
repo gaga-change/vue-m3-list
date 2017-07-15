@@ -70,6 +70,7 @@
           freeModeMomentumRatio: 0.2, // 自由状态下，惯性
           spaceBetween: 20, // 两图之间的间距
           slidesOffsetBefore: 20, // 第一张图和左边的偏移量
+          slidesOffsetAfter: 20, // 最后一张图和右边的偏移量
           lazyLoadingInPrevNextAmount: parseInt(document.body.clientWidth / 170),
           lazyLoading: true, // 图片延迟加载，src -> data-src
           preloadImages: false,
@@ -77,8 +78,8 @@
           lazyLoadingInPrevNext: true, // 提前加载旁边的
           lazyLoadingOnTransitionStart: false, // 过渡一开始就加载
           mousewheelControl: false, // 鼠标滚轮控制
-//          slidesPerView: 3,
-          width: 150 // 配置宽度
+          slidesPerView: 'auto'
+//          width: 150 // 配置宽度
 //          setWrapperSize: true,
 //          paginationClickable: true,
 //          mousewheelControl: true,
@@ -138,6 +139,7 @@
   }
 
   .swiper-item {
+    max-width: 150px;
     height: 151px;
     text-align: center;
     font-size: 18px;
