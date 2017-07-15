@@ -10,7 +10,7 @@
                  @touchend="touchend($event, item)"
                  @touchmove="touchmove($event, item)"
                  @touchstart="touchstart($event, item)">
-              <ul class="hrgames-img my-20" :style="{width: item.imgs.length * 140 + 'px'}">
+              <ul class="hrgames-img my-20" :style="{width: item.imgs.length * imgSize + 'px'}">
                 <li v-for="src in item.imgs" class="img-demo fl">
                   <img :src="src">
                 </li>
@@ -61,6 +61,7 @@
             x: 0
           }
         ],
+        imgSize: 140,
         startX: 0,
         saveX: 0,
         duration: 0,
@@ -77,31 +78,43 @@
     methods: {
       touchstart (e, item) {
         let pageX = e.changedTouches[0].pageX
-        console.log('start', pageX)
         this.startX = pageX
         this.saveX = item.x
         this.duration = 0
         this.moveItem = item
         this.saveMove.timeStamp = e.timeStamp
-        this.saveMove.pageX = e.pageX
+        this.saveMove.pageX = pageX
       },
-      touchmove (e, item) {
+      touchmove (e) {
         let pageX = e.changedTouches[0].pageX
-//        console.log('move', pageX)
-//        console.log('move', e.timeStamp)
+        let maxLeftSize = -1 * (this.moveItem.imgs.length - 3) * this.imgSize - 20
+        let stopScale = 1
+        if (this.saveX + pageX - this.startX < maxLeftSize) {
+          stopScale = Math.ceil((maxLeftSize - (this.saveX + pageX - this.startX)) / 40)
+        } else if (this.saveX + pageX - this.startX > 0) {
+          stopScale = Math.ceil((this.saveX + pageX - this.startX) / 40)
+        }
+        pageX = this.saveMove.pageX + (pageX - this.saveMove.pageX) / (stopScale * stopScale)
         this.speed = (pageX - this.saveMove.pageX) / (e.timeStamp - this.saveMove.timeStamp)
-//        console.log(this.speed)
-        this.moveItem.x = this.saveX + pageX - this.startX
+        this.moveItem.x = this.saveX + (pageX - this.startX)
         this.saveMove.timeStamp = e.timeStamp
         this.saveMove.pageX = pageX
       },
-      touchend (e, item) {
+      touchend (e) {
+        let maxLeftSize = -1 * (this.moveItem.imgs.length - 3) * this.imgSize - 20
         let direction = this.speed < 0 ? -1 : 1
-        let moveAgain = Math.abs(this.speed) < 3 ? parseInt(100 * this.speed) : direction * 300
+        let moveAgain = Math.abs(this.speed) < 4 ? parseInt(100 * this.speed) : direction * 300
         let duration = Math.abs(this.speed) < 1 ? parseInt(500 * Math.abs(this.speed)) : 500
-        console.log(moveAgain, duration)
-        this.moveItem.x = this.moveItem.x + moveAgain
-        this.duration = duration
+        if (this.moveItem.x + moveAgain < maxLeftSize) {
+          this.moveItem.x = maxLeftSize
+          this.duration = 200
+        } else if (this.moveItem.x + moveAgain > 0) {
+          this.moveItem.x = 0
+          this.duration = 200
+        } else {
+          this.moveItem.x = this.moveItem.x + moveAgain
+          this.duration = duration
+        }
       }
     }
   }
