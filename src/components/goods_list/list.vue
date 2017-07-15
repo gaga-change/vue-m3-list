@@ -27,9 +27,19 @@
             <a href="javascript:void(0)" v-else>
               <div class="hrgames-titl f32 color-000">{{item.title}}</div>
               <div class="hrgames-img my-20">
-                <div class="img-demo fl"><img src="~images/games2-list.png"></div>
-                <div class="img-demo fl"><img src="~images/games2-list.png"></div>
-                <div class="img-demo fl"><img src="~images/games2-list.png"></div>
+                <v-slide :imgs="item.small_img_list" :key="item.id"></v-slide>
+   <!--             <ul>
+                  <li class="img-demo fl" v-for="(src, imgIndex) in item.small_img_list">
+                    <img src="~images/games2-list.png">
+                  </li>
+                  <li class="img-demo fl">
+                    <img src="~images/games2-list.png">
+                  </li>
+                  <li class="img-demo fl">
+                    <img src="~images/games2-list.png">
+                  </li>
+                  <div style="clear: both"></div>
+                </ul>-->
               </div>
               <div class="hrgames-tne"><span class="hr-price color-m1 f32 fl">￥{{item.price}}</span> <span
                  class="hr-area f26 color-666 ml-30">{{item.region_name}}/{{item.server_name}}</span></div>
@@ -61,8 +71,12 @@
 </template>
 
 <script>
+  import slide from './swipe_slide.vue'
   export default {
     props: ['goodsList', 'scrollButton', 'switchState'],
+    components: {
+      'v-slide': slide
+    },
     data () {
       return {
         start: false,
@@ -95,3 +109,22 @@
     }
   }
 </script>
+
+<style>
+  .listware {
+    padding-right: 0 !important;
+  }
+
+  .hrgames-img li {
+    width: 130px !important;
+    height: 81px !important;
+    overflow: hidden !important;
+    float: left;
+    margin-right: 10px !important;
+  }
+
+  .hrgames-img li img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+</style>

@@ -231,6 +231,46 @@
       this.init()
     },
     methods: {
+      /* 列表处理  1.大图小图处理（压缩） */
+      listImgFilter (list) {
+        list.map(obj => {
+          obj.goods_img = imgfilterMain(obj.goods_img) // 主图处理
+          /* 大图小图处理 */
+          obj.big_img_list = obj.big_img_list.split(';').filter(v => v.length) // 切成数组
+          obj.small_img_list = obj.small_img_list.split(';').filter(v => v.length) // 切成数组
+          /* 如果big_img_list 或 small_img_list 没有传东西，填入一张主图 */
+          if (obj.big_img_list.length === 0) {
+            obj.big_img_list.push(obj.goods_img.split('?')[0])
+          }
+          if (obj.small_img_list.length === 0) {
+            obj.small_img_list.push(obj.goods_img)
+          }
+          obj.small_img_list = obj.small_img_list.map(v => {
+            return v.replace('w_112,h_112', 'w_130,h_81')
+          })
+          obj.big_img_list = obj.big_img_list.map(v => imgfilter(v))
+          /* 大图处理 */
+          function imgfilter (path) {
+            if (path.indexOf('http://m5173.img-cn-hangzhou.aliyuncs.com') > -1 || path.indexOf('img1.5173.com') > -1) {
+              return path + '?x-oss-process=image/resize,m_fixed,w_880/format,jpg/quality,q_60'
+            } else {
+              return path
+            }
+          }
+          /* 主图处理 */
+          function imgfilterMain (path) {
+            if (path === '//img1.5173.com/') {
+              return '/dist/default_img.jpg'
+            } else if (path.indexOf('img1.5173.com') > -1 && path.indexOf('x-oss-process=image') > -1) {
+              return path
+            } else if (path.indexOf('img1.5173.com') > -1) {
+              return path + '?x-oss-process=image/resize,m_fixed,w_112'
+            } else {
+              return path
+            }
+          }
+        })
+      },
       /* 多图切换按钮点击 */
       switchClick () {
         this.switchState = !this.switchState
@@ -252,6 +292,7 @@
           this.goodsList.page = 0
           this.goodsList.nowParams = JSON.stringify(this.params)
           let data = await this.getGoodsList({...this.params, page: 0})
+          this.listImgFilter(data)
           this.goodsList.list = this.clone(data)
         }
       },
@@ -259,6 +300,7 @@
       setGoodsListAdd () {
         this.goodsList.page += 1
         return this.getGoodsList({...this.params, page: this.goodsList.page}).then(data => {
+          this.listImgFilter(data)
           this.goodsList.list.push(...this.clone(data))
           return data.length < this.goodsList.pageCount
         })
