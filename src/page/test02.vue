@@ -26,6 +26,7 @@
       startX <span v-text="startX"></span> <br>
       saveX <span v-text="saveX"></span> <br>
       speed <span v-text="speed"></span> <br>
+      <span>{{test}}</span>
     </div>
     <div style="width: 100%; height: 8000px;background-color: #66c6fb"></div>
   </div>
@@ -64,6 +65,7 @@
             maxX: 0
           }
         ],
+        test: '',
         imgSize: 140,
         startY: 0,
         startX: 0,
@@ -80,10 +82,15 @@
     },
     mounted () {
       this.imgStartLoadSize = Math.ceil(document.body.clientWidth / this.imgSize)
+//      window.addEventListener('touchcancel', e => {
+//        console.log(e)
+//      })
     },
     methods: {
       touchstart (e, item) {
-        console.log('touchstart')
+        e.preventDefault()
+        this.test = this.test + 'touchstart '
+        e.stopPropagation()
         this.touching = true
         let pageX = e.changedTouches[0].pageX
         this.startX = pageX
@@ -96,6 +103,8 @@
         this.speed = 0
       },
       touchmove (e) {
+        this.test = this.test + 'touchmove '
+        e.preventDefault()
         e.stopPropagation()
         let pageX = e.changedTouches[0].pageX
         let pageY = e.changedTouches[0].pageY
@@ -122,6 +131,9 @@
         this.saveMove.pageX = pageX
       },
       touchend (e) {
+        this.test = this.test + 'touchend '
+        e.preventDefault()
+        e.stopPropagation()
         this.touchMoveX = null
         if (this.touchMoveX === false) {
           return
