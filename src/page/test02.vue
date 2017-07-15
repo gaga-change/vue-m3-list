@@ -26,7 +26,6 @@
       startX <span v-text="startX"></span> <br>
       saveX <span v-text="saveX"></span> <br>
       speed <span v-text="speed"></span> <br>
-      <span>{{test}}</span>
     </div>
     <div style="width: 100%; height: 8000px;background-color: #66c6fb"></div>
   </div>
@@ -65,7 +64,6 @@
             maxX: 0
           }
         ],
-        test: '',
         imgSize: 140,
         startY: 0,
         startX: 0,
@@ -88,8 +86,7 @@
     },
     methods: {
       touchstart (e, item) {
-        e.preventDefault()
-        this.test = this.test + 'touchstart '
+//        e.preventDefault()
         e.stopPropagation()
         this.touching = true
         let pageX = e.changedTouches[0].pageX
@@ -103,15 +100,15 @@
         this.speed = 0
       },
       touchmove (e) {
-        this.test = this.test + 'touchmove '
         e.preventDefault()
-        e.stopPropagation()
+        console.log('touchmove')
+//        e.stopPropagation()
         let pageX = e.changedTouches[0].pageX
         let pageY = e.changedTouches[0].pageY
         if (this.touchMoveX === null) {
           this.getDirection({x: this.startX, y: this.startY}, {x: pageX, y: pageY})
-          return
-        } else if (this.touchMoveX === false) {
+        }
+        if (this.touchMoveX === false) {
           return
         } else {
           document.body.style['overflow'] = 'hidden'
@@ -129,11 +126,11 @@
         this.moveItem.x = this.saveX + (pageX - this.startX)
         this.saveMove.timeStamp = e.timeStamp
         this.saveMove.pageX = pageX
+        console.log('x', this.saveX + (pageX - this.startX), this.speed)
       },
       touchend (e) {
-        this.test = this.test + 'touchend '
-        e.preventDefault()
-        e.stopPropagation()
+//        e.preventDefault()
+//        e.stopPropagation()
         this.touchMoveX = null
         if (this.touchMoveX === false) {
           return

@@ -36,13 +36,13 @@
     },
     mounted () {
       this.noSwipe = (this.screenWidth - this.paddingLeft) / this.imgSize >= this.imgs.length
-      document.addEventListener('touchmove', function (e) {
-        e.preventDefault()
-      }, false)
+//      document.addEventListener('touchmove', function (e) {
+//        e.preventDefault()
+//      }, false)
     },
     methods: {
       touchstart (e) {
-        e.stopPropagation()
+//        e.preventDefault()
         if (this.noSwipe) return
         let pageX = e.changedTouches[0].pageX
         let pageY = e.changedTouches[0].pageY
@@ -56,14 +56,13 @@
         this.speed = 0 // 速度初始化
       },
       touchmove (e) {
-        e.stopPropagation()
+        e.preventDefault()
         if (this.noSwipe) return
         let pageX = e.changedTouches[0].pageX
         let pageY = e.changedTouches[0].pageY
         if (this.touchMoveX === null) {
           /* 方向为null， 则获取方向 */
           this.getDirection({x: this.startX, y: this.startY}, {x: pageX, y: pageY})
-          return
         }
         /* 如果方向为纵向，则直接退出，主屏幕优先滚动 */
         if (this.touchMoveX === false) {
@@ -86,23 +85,25 @@
         this.saveMove.pageX = pageX
       },
       touchend (e) {
-        e.stopPropagation()
+//        e.preventDefault()
         if (this.noSwipe) return
         document.body.style['overflow'] = 'visible'
-        let maxLeftSize = -1 * (this.imgs.length * this.imgSize - this.screenWidth) - this.paddingLeft
-        let direction = this.speed < 0 ? -1 : 1
-        let moveAgain = Math.abs(this.speed) < 4 ? parseInt(100 * this.speed) : direction * 300
-        let duration = Math.abs(this.speed) < 1 ? parseInt(500 * Math.abs(this.speed)) : 500
-        if (this.x + moveAgain < maxLeftSize) {
-          this.x = maxLeftSize
-          this.duration = 200
-        } else if (this.x + moveAgain > 0) {
-          this.x = 0
-          this.duration = 200
-        } else {
-          this.x = this.x + moveAgain
-          this.duration = duration
-        }
+//        let maxLeftSize = -1 * (this.imgs.length * this.imgSize - this.screenWidth) - this.paddingLeft
+//        let direction = this.speed < 0 ? -1 : 1
+//        let moveAgain = Math.abs(this.speed) < 4 ? parseInt(100 * this.speed) : direction * 300
+//        let duration = Math.abs(this.speed) < 1 ? parseInt(1000 * Math.abs(this.speed)) : 1000
+        let moveAgain = parseInt(200 * this.speed)
+        let duration = 500
+//        if (this.x + moveAgain < maxLeftSize) {
+//          this.x = maxLeftSize
+//          this.duration = 200
+//        } else if (this.x + moveAgain > 0) {
+//          this.x = 0
+//          this.duration = 200
+//        } else {
+        this.x = this.x + moveAgain
+        this.duration = duration
+//        }
         this.maxX = this.maxX > this.x ? this.x : this.maxX
       },
       getDirection (start, move) {

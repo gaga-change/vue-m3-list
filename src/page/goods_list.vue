@@ -108,7 +108,7 @@
     },
     data () {
       return {
-        switchState: true, // true 为单图，false 为多图
+        switchState: false, // true 为单图，false 为多图
         gameId: null, // 游戏id
         goodsType: {list: [], checked: {}}, // 商品类型以及默认选中项
         show: {type: false, server: false, sort: false, filter: false}, // 控制第二层菜单的显示
