@@ -81,7 +81,7 @@
 //        console.log(this.saveMove.timeStamp)
         if (e.timeStamp - this.saveMove.timeStamp > 100) {
           this.speed = (pageX - this.saveMove.pageX) / (e.timeStamp - this.saveMove.timeStamp) * 1000
-          console.log(this.speed)
+//          console.log(this.speed)
           this.saveMove.timeStamp = e.timeStamp
           this.saveMove.pageX = pageX
         }
@@ -95,7 +95,7 @@
         } else { // 小于300
           this.speed = ((pageX - this.saveMove.pageX) / (e.timeStamp - this.saveMove.timeStamp) * 1000 + this.speed) / 2
         }
-        console.log(this.speed)
+//        console.log(this.speed)
 //        e.preventDefault()
         document.body.style['overflow'] = 'visible'
         let maxLeftSize = -1 * (this.imgs.length * this.imgSize - this.screenWidth) - this.paddingLeft
