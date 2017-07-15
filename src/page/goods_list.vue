@@ -3,7 +3,12 @@
     <!-- 头部 公共组价
       title<String> 给头部组件配置一个标题
     -->
-    <v-header :show="!show.filter" title="gaga"></v-header>
+    <v-header
+       :show="!show.filter"
+       :showSwitch="true"
+       :switchState="switchState"
+       @switchClick="switchClick"
+       title="gaga"></v-header>
     <!-- top -->
     <div v-show="!show.filter" class="goodslist-01">
       <div class="mobilegames-nav border-bottom mt-97 bg-fff fixed-top" style="z-index: 2">
@@ -102,6 +107,7 @@
     },
     data () {
       return {
+        switchState: true, // true 为单图，false 为多图
         gameId: null, // 游戏id
         goodsType: {list: [], checked: {}}, // 商品类型以及默认选中项
         show: {type: false, server: false, sort: false, filter: false}, // 控制第二层菜单的显示
@@ -224,6 +230,11 @@
       this.init()
     },
     methods: {
+      /* 多图切换按钮点击 */
+      switchClick () {
+        console.log('---')
+        this.switchState = !this.switchState
+      },
       /* 重新配置列表获取列表 */
       async asyncSetGoodsListInit () {
         /* 1. 当幕布回收的时候，判断请求参数（params）是否改变，如果有改变，重启发送请求
