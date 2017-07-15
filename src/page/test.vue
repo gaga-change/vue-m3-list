@@ -63,6 +63,7 @@
     data () {
       return {
         swiperOption: {
+          offsetSlidesAfter: 2,
           notNextTick: true,
 //          height: 300, // 配置高度 只有在垂直时生效
           freeMode: true, // 没有图片滑动吸引
@@ -75,8 +76,8 @@
           updateOnImagesReady: true,
           lazyLoadingInPrevNext: true, // 提前加载旁边的
           lazyLoadingOnTransitionStart: false, // 过渡一开始就加载
-          mousewheelControl: true,
-//          slidesPerView: 'auto',
+          mousewheelControl: false, // 鼠标滚轮控制
+//          slidesPerView: 3,
           width: 150 // 配置宽度
 //          setWrapperSize: true,
 //          paginationClickable: true,
@@ -137,7 +138,7 @@
   }
 
   .swiper-item {
-    height: 150px;
+    height: 151px;
     text-align: center;
     font-size: 18px;
     /* Center slide text vertically */

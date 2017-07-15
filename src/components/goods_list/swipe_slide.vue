@@ -36,9 +36,6 @@
     },
     mounted () {
       this.noSwipe = (this.screenWidth - this.paddingLeft) / this.imgSize >= this.imgs.length
-//      document.addEventListener('touchmove', function (e) {
-//        e.preventDefault()
-//      }, false)
     },
     methods: {
       touchstart (e) {
@@ -56,7 +53,6 @@
         this.speed = 0 // 速度初始化
       },
       touchmove (e) {
-        e.preventDefault()
         if (this.noSwipe) return
         let pageX = e.changedTouches[0].pageX
         let pageY = e.changedTouches[0].pageY
@@ -68,6 +64,7 @@
         if (this.touchMoveX === false) {
           return
         } else {
+          e.preventDefault()
           /* 如果方向为横向，禁止主屏纵向滚动 */
           document.body.style['overflow'] = 'hidden'
         }
@@ -79,31 +76,44 @@
 //          stopScale = Math.ceil((this.saveX + pageX - this.startX) / 40)
 //        }
         pageX = this.saveMove.pageX + (pageX - this.saveMove.pageX) / (stopScale * stopScale)
-        this.speed = (pageX - this.saveMove.pageX) / (e.timeStamp - this.saveMove.timeStamp)
+//        this.speed = (pageX - this.saveMove.pageX) / (e.timeStamp - this.saveMove.timeStamp)
         this.x = this.saveX + (pageX - this.startX)
-        this.saveMove.timeStamp = e.timeStamp
-        this.saveMove.pageX = pageX
+//        console.log(this.saveMove.timeStamp)
+        if (e.timeStamp - this.saveMove.timeStamp > 100) {
+          this.speed = (pageX - this.saveMove.pageX) / (e.timeStamp - this.saveMove.timeStamp) * 1000
+          console.log(this.speed)
+          this.saveMove.timeStamp = e.timeStamp
+          this.saveMove.pageX = pageX
+        }
       },
       touchend (e) {
-//        e.preventDefault()
         if (this.noSwipe) return
+        /* 大于300 */
+        let pageX = e.changedTouches[0].pageX
+        if (e.timeStamp - this.saveMove.timeStamp > 100) {
+          this.speed = (pageX - this.saveMove.pageX) / (e.timeStamp - this.saveMove.timeStamp) * 1000
+        } else { // 小于300
+          this.speed = ((pageX - this.saveMove.pageX) / (e.timeStamp - this.saveMove.timeStamp) * 1000 + this.speed) / 2
+        }
+        console.log(this.speed)
+//        e.preventDefault()
         document.body.style['overflow'] = 'visible'
-//        let maxLeftSize = -1 * (this.imgs.length * this.imgSize - this.screenWidth) - this.paddingLeft
+        let maxLeftSize = -1 * (this.imgs.length * this.imgSize - this.screenWidth) - this.paddingLeft
 //        let direction = this.speed < 0 ? -1 : 1
 //        let moveAgain = Math.abs(this.speed) < 4 ? parseInt(100 * this.speed) : direction * 300
 //        let duration = Math.abs(this.speed) < 1 ? parseInt(1000 * Math.abs(this.speed)) : 1000
-        let moveAgain = parseInt(200 * this.speed)
+        let moveAgain = this.speed * 0.5 / 2
         let duration = 500
-//        if (this.x + moveAgain < maxLeftSize) {
-//          this.x = maxLeftSize
-//          this.duration = 200
-//        } else if (this.x + moveAgain > 0) {
-//          this.x = 0
-//          this.duration = 200
-//        } else {
-        this.x = this.x + moveAgain
-        this.duration = duration
-//        }
+        if (this.x + moveAgain < maxLeftSize) {
+          this.x = maxLeftSize
+          this.duration = 500
+        } else if (this.x + moveAgain > 0) {
+          this.x = 0
+          this.duration = 500
+        } else {
+          this.x = this.x + moveAgain
+          this.duration = duration
+        }
         this.maxX = this.maxX > this.x ? this.x : this.maxX
       },
       getDirection (start, move) {
