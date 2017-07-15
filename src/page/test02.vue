@@ -11,8 +11,8 @@
                  @touchmove="touchmove($event, item)"
                  @touchstart="touchstart($event, item)">
               <ul class="hrgames-img my-20" :style="{width: item.imgs.length * imgSize + 'px'}">
-                <li v-for="src in item.imgs" class="img-demo fl">
-                  <img :src="src">
+                <li v-for="(src, imgIndex) in item.imgs" class="img-demo fl">
+                  <img :data-src="src" :src="screenWidth - item.maxX > imgSize * imgIndex ? src : null ">
                 </li>
                 <div style="clear: both"></div>
               </ul>
@@ -54,11 +54,13 @@
         list: [
           {
             imgs: ['/static/games2-list.png', '/static/games2-list.png', '/static/games2-list.png', '/static/games2-list.png', '/static/games2-list.png'],
-            x: 0
+            x: 0,
+            maxX: 0
           },
           {
             imgs: ['/static/games2-list.png', '/static/games2-list.png', '/static/games2-list.png', '/static/games2-list.png', '/static/games2-list.png', '/static/games2-list.png'],
-            x: 0
+            x: 0,
+            maxX: 0
           }
         ],
         imgSize: 140,
@@ -66,14 +68,14 @@
         saveX: 0,
         duration: 0,
         speed: 0,
+        screenWidth: document.body.clientWidth,
         saveMove: {timeStamp: 0, pageX: 0},
-        moveItem: null
+        moveItem: null,
+        imgStartLoadSize: 0
       }
     },
     mounted () {
-      this.$refs.gaga.addEventListener('click', function (e) {
-        console.log(e.screenX, e.clientX)
-      })
+      this.imgStartLoadSize = Math.ceil(document.body.clientWidth / this.imgSize)
     },
     methods: {
       touchstart (e, item) {
@@ -115,6 +117,7 @@
           this.moveItem.x = this.moveItem.x + moveAgain
           this.duration = duration
         }
+        this.moveItem.maxX = this.moveItem.maxX > this.moveItem.x ? this.moveItem.x : this.moveItem.maxX
       }
     }
   }
