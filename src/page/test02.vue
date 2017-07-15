@@ -27,6 +27,7 @@
       saveX <span v-text="saveX"></span> <br>
       speed <span v-text="speed"></span> <br>
     </div>
+    <div style="width: 100%; height: 8000px;background-color: #66c6fb"></div>
   </div>
 </template>
 
@@ -64,6 +65,7 @@
           }
         ],
         imgSize: 140,
+        startY: 0,
         startX: 0,
         saveX: 0,
         duration: 0,
@@ -71,7 +73,9 @@
         screenWidth: document.body.clientWidth,
         saveMove: {timeStamp: 0, pageX: 0},
         moveItem: null,
-        imgStartLoadSize: 0
+        imgStartLoadSize: 0,
+        touching: false,
+        touchMoveX: null
       }
     },
     mounted () {
@@ -79,16 +83,31 @@
     },
     methods: {
       touchstart (e, item) {
+        console.log('touchstart')
+        this.touching = true
         let pageX = e.changedTouches[0].pageX
         this.startX = pageX
+        this.startY = e.changedTouches[0].pageY
         this.saveX = item.x
         this.duration = 0
         this.moveItem = item
         this.saveMove.timeStamp = e.timeStamp
         this.saveMove.pageX = pageX
+        this.speed = 0
       },
       touchmove (e) {
+        e.stopPropagation()
         let pageX = e.changedTouches[0].pageX
+        let pageY = e.changedTouches[0].pageY
+        if (this.touchMoveX === null) {
+          this.getDirection({x: this.startX, y: this.startY}, {x: pageX, y: pageY})
+          return
+        } else if (this.touchMoveX === false) {
+          return
+        } else {
+          document.body.style['overflow'] = 'hidden'
+        }
+//        let pageY = e.changedTouches[0].pageY
         let maxLeftSize = -1 * (this.moveItem.imgs.length - 3) * this.imgSize - 20
         let stopScale = 1
         if (this.saveX + pageX - this.startX < maxLeftSize) {
@@ -103,6 +122,12 @@
         this.saveMove.pageX = pageX
       },
       touchend (e) {
+        this.touchMoveX = null
+        if (this.touchMoveX === false) {
+          return
+        }
+        document.body.style['overflow'] = 'visible'
+        this.touching = false
         let maxLeftSize = -1 * (this.moveItem.imgs.length - 3) * this.imgSize - 20
         let direction = this.speed < 0 ? -1 : 1
         let moveAgain = Math.abs(this.speed) < 4 ? parseInt(100 * this.speed) : direction * 300
@@ -118,6 +143,13 @@
           this.duration = duration
         }
         this.moveItem.maxX = this.moveItem.maxX > this.moveItem.x ? this.moveItem.x : this.moveItem.maxX
+      },
+      getDirection (start, move) {
+        if (Math.abs(start.x - move.x) > Math.abs(start.y - move.y)) {
+          this.touchMoveX = true
+        } else {
+          this.touchMoveX = false
+        }
       }
     }
   }

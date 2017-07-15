@@ -17,7 +17,7 @@
 
 <script>
   export default {
-    props: ['imgs'],
+    props: ['imgs', 'paddingLeft'],
     data () {
       return {
         imgSize: 140, // 一个图片项的大小（包括margin padding）
@@ -42,7 +42,7 @@
       },
       touchmove (e) {
         let pageX = e.changedTouches[0].pageX
-        let maxLeftSize = -1 * (this.imgs.length - 3) * this.imgSize
+        let maxLeftSize = -1 * (this.imgs.length * this.imgSize - this.screenWidth) - this.paddingLeft
         let stopScale = 1
         if (this.saveX + pageX - this.startX < maxLeftSize) {
           stopScale = Math.ceil((maxLeftSize - (this.saveX + pageX - this.startX)) / 40)
@@ -56,7 +56,7 @@
         this.saveMove.pageX = pageX
       },
       touchend () {
-        let maxLeftSize = -1 * (this.imgs.length - 3) * this.imgSize
+        let maxLeftSize = -1 * (this.imgs.length * this.imgSize - this.screenWidth) - this.paddingLeft
         let direction = this.speed < 0 ? -1 : 1
         let moveAgain = Math.abs(this.speed) < 4 ? parseInt(100 * this.speed) : direction * 300
         let duration = Math.abs(this.speed) < 1 ? parseInt(500 * Math.abs(this.speed)) : 500
@@ -75,3 +75,18 @@
     }
   }
 </script>
+
+<style scoped>
+  .hrgames-img li {
+    width: 130px !important;
+    height: 81px !important;
+    overflow: hidden !important;
+    float: left;
+    margin-right: 10px !important;
+  }
+
+  .hrgames-img li img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+</style>

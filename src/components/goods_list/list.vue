@@ -27,7 +27,10 @@
             <a href="javascript:void(0)" v-else>
               <div class="hrgames-titl f32 color-000">{{item.title}}</div>
               <div class="hrgames-img my-20">
-                <v-slide :imgs="item.small_img_list" :key="item.id"></v-slide>
+                <v-slide
+                   :paddingLeft="paddingLeft"
+                   :imgs="item.small_img_list"
+                   :key="item.id"></v-slide>
    <!--             <ul>
                   <li class="img-demo fl" v-for="(src, imgIndex) in item.small_img_list">
                     <img src="~images/games2-list.png">
@@ -59,14 +62,7 @@
         </div>
       </v-infinite-scroll>
     </div>
-    <!--列表2-->
-    <div class="mbilegames-list border-top" style="display:none">
-      <ul>
-        <li class="listware px-30 py-20 bg-fff border-bottom mb-20">
-
-        </li>
-      </ul>
-    </div>
+    <div style="width: .3rem;height: 0;" ref="padding"></div>
   </div>
 </template>
 
@@ -80,7 +76,8 @@
     data () {
       return {
         start: false,
-        noNext: false
+        noNext: false,
+        paddingLeft: 0
       }
     },
     computed: {
@@ -99,6 +96,9 @@
         }
       }
     },
+    mounted () {
+      this.paddingLeft = this.$refs.padding.clientWidth + 1
+    },
     methods: {
       updateBottom () {
         return this.scrollButton().then(d => {
@@ -110,21 +110,9 @@
   }
 </script>
 
-<style>
+<style scoped>
   .listware {
-    padding-right: 0 !important;
-  }
-
-  .hrgames-img li {
-    width: 130px !important;
-    height: 81px !important;
-    overflow: hidden !important;
-    float: left;
-    margin-right: 10px !important;
-  }
-
-  .hrgames-img li img {
-    max-width: 100% !important;
-    height: auto !important;
+    /*padding-right: 0 !important;*/
+    /*padding: 15px !important;*/
   }
 </style>
