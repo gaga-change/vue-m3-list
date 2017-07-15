@@ -53,6 +53,7 @@
       </div>
       <!-- 列表 -->
       <v-list
+         :switchState="switchState"
          :goodsList="goodsList"
          :scrollButton="setGoodsListAdd"></v-list>
       <div class="mstfiv" v-show="mstfivShow" @click="mstfivClick" @touchmove.prevent style="z-index: 1"></div>
@@ -232,15 +233,18 @@
     methods: {
       /* 多图切换按钮点击 */
       switchClick () {
-        console.log('---')
         this.switchState = !this.switchState
+        this.asyncSetGoodsListInit(true)
       },
-      /* 重新配置列表获取列表 */
-      async asyncSetGoodsListInit () {
+      /**
+       * 初始化列表
+       * @param forceInit 如果为true，强制初始化列表
+       */
+      async asyncSetGoodsListInit (forceInit = false) {
         /* 1. 当幕布回收的时候，判断请求参数（params）是否改变，如果有改变，重启发送请求
          * 2. 数据初始化完毕（init）时, 触发
          */
-        if (JSON.stringify(this.params) !== this.goodsList.nowParams) {
+        if (JSON.stringify(this.params) !== this.goodsList.nowParams || forceInit) {
           console.log('数据初始化 触发成功')
           /* null 是用来判断列表是否第一次请求（list组件需要），所以第一次请求不能先赋值一个空数组 */
 //          if (this.goodsList.list !== null) this.goodsList.list = []
