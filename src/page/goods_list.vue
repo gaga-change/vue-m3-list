@@ -153,8 +153,8 @@
           },
           service: {
             list: [
-              {name: '安心买', checked: false, key: 'is_robot_capture'},
-              {name: '截图认证', checked: false, key: 'is_axm'}
+              {name: '安心买', checked: false, key: 'is_axm'},
+              {name: '截图认证', checked: false, key: 'is_robot_capture'}
             ],
             chooseType: 2
           },

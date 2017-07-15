@@ -2,9 +2,6 @@
   <div id="wrapper">
     <div id="app">
       <router-view></router-view>
-      <!--<keep-alive include="currentView">-->
-      <!--</keep-alive>-->
-      <!--<router-view></router-view>-->
     </div>
   </div>
 </template>
