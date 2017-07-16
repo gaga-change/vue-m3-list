@@ -13,10 +13,12 @@
         <slot name="noDataShow" v-if="true"></slot>
         <!-- !start（start===false） 第一次加载的时候显示 -->
         <!-- loading && !allLoading 加载中的时候显示 -->
-        <p v-show="(loading && !allLoading) || start === false" class="page-infinite-loading">
-          <mt-spinner type="fading-circle"></mt-spinner>
-          加载中...
-        </p>
+        <div class="page-infinite-loading">
+          <p v-show="(loading && !allLoading) || start === false">
+            <mt-spinner  type="fading-circle"></mt-spinner>
+            加载中...
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -38,6 +40,17 @@
         loadmoreDom: null
       }
     },
+    watch: {
+      start (val) {
+        if (!val) {
+          // 没开始
+          this.loading = true
+        } else {
+          // 开始
+          this.loading = false
+        }
+      }
+    },
     computed: {
       list () {
         return this.dataArr
@@ -49,6 +62,7 @@
     },
     methods: {
       loadMore () {
+        console.log('loadMore')
         this.loading = true
         this.updateBottom().then((noData) => {
           if (noData) {

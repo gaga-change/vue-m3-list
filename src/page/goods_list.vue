@@ -274,6 +274,8 @@
       /* 多图切换按钮点击 */
       switchClick () {
         this.switchState = !this.switchState
+//        this.goodsList.page = 0
+//        this.goodsList.list = null
         this.asyncSetGoodsListInit(true)
       },
       /**
@@ -298,6 +300,8 @@
       },
       /* 列表滚动到底部时, 自动执行该方法 */
       setGoodsListAdd () {
+        console.log('滚动到底部时')
+        this.goodsList.list = this.goodsList.list || [] // 切换列表时，采用自动填充
         this.goodsList.page += 1
         return this.getGoodsList({...this.params, page: this.goodsList.page}).then(data => {
           this.listImgFilter(data)
@@ -472,3 +476,9 @@
     }
   }
 </script>
+
+<style>
+  .mobilegames-conn .listware .hrgames-img {
+    width: 100%;
+  }
+</style>

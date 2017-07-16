@@ -1,10 +1,7 @@
 <template>
   <div>
     <swiper :options="swiperOption" class="swiper-box" ref="mySwiper">
-      <swiper-slide class="swiper-item">
-        <img data-src="http://img1.3lian.com/2015/w7/78/d/91.jpg" class="swiper-lazy">
-        <div class="swiper-lazy-preloader"></div>
-      </swiper-slide>
+
       <swiper-slide class="swiper-item">
         <img data-src="http://pic.58pic.com/58pic/16/99/22/64Q58PIC6d8_1024.jpg" class="swiper-lazy">
         <div class="swiper-lazy-preloader"></div>
@@ -125,10 +122,10 @@
   }
 
   .swiper-box {
-    width: 100%;
-    height: 100%;
-    margin: 0 auto;
-  }
+       width: 100%;
+       height: 100%;
+       margin: 0 auto;
+     }
 
   .swiper-item:nth-child(even) {
     background-color: silver;

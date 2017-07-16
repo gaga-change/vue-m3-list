@@ -7,7 +7,8 @@
          :dataArr="list"
          :updateBottom="updateBottom">
         <ul>
-          <li class="listware px-30 py-30 bg-fff border-bottom mb-20"
+          <!--<li class="listware px-30 py-30 bg-fff border-bottom mb-20"-->
+          <li class="listware bg-fff border-bottom mb-20"
               v-for="item in list">
             <a href="javascript:void(0)" v-if="switchState">
               <div class="mbgmes-img fl"><img src="~images/games-list.png"></div>
@@ -26,7 +27,7 @@
             </a>
             <a href="javascript:void(0)" v-else>
               <div class="hrgames-titl f32 color-000">{{item.title}}</div>
-              <div class="hrgames-img my-20">
+              <div class="hrgames-img my-20 row">
                 <v-slide
                    :paddingLeft="paddingLeft"
                    :imgs="item.small_img_list"
@@ -87,10 +88,12 @@
     watch: {
       list (val, old) {
         if (val === null) {
+          console.log('this.start false')
           this.start = false
         }
         if (old === null && val !== null) {
           this.$nextTick(() => {
+            console.log('this.start true')
             this.start = true
           })
         }
@@ -101,6 +104,7 @@
     },
     methods: {
       updateBottom () {
+        console.log('list updateBottom')
         return this.scrollButton().then(d => {
           if (d) this.noNext = true
           return d
@@ -112,7 +116,14 @@
 
 <style scoped>
   .listware {
-    /*padding-right: 0 !important;*/
-    /*padding: 15px !important;*/
+    padding: 15px;
+  }
+  a {
+    display: block;
+  }
+  .row {
+    margin-left: -15px;
+    margin-right: -15px;
+    width: auto!important;
   }
 </style>
