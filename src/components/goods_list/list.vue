@@ -122,7 +122,7 @@
     display: block;
   }
   .row {
-    margin-left: -15px;
+    /*margin-left: -15px;*/
     margin-right: -15px;
     width: auto!important;
   }
